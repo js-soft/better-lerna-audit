@@ -1,6 +1,6 @@
 {
   "name": "better-lerna-audit",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "description": "Micro util to run better-npm-audit for lerna packages (with optional autofix)",
   "repository": "github:js-soft/better-lerna-audit",
   "license": "ISC",
