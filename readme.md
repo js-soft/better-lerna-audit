@@ -2,7 +2,9 @@
 
 # Lerna Audit
 
-Micro util to run npm audit for lerna packages (with autofix).
+Micro util to run better-npm-audit for lerna packages (with autofix).
+
+Inspired (and forked) from https://github.com/tnobody/lerna-audit. Because of the usage of `better-npm-audit` instead of `npm audit` we cannot fix the issues in the `package.json` automatically.
 
 ## How to use
 
@@ -34,9 +36,7 @@ Or add a script to your `package.json` in root:
 
 #### Options
 
-| Parameter | Default | Description                                          |
-| --------- | ------- | ---------------------------------------------------- |
-| `--fix`   | false   | (optional) Fix the found vulnerabilities, just audit |
+Same options as described [here](https://github.com/jeemok/better-npm-audit#usage).
 
 ## Why
 
