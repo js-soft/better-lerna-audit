@@ -8,7 +8,7 @@ const { spawnSync } = require("child_process")
 const { promises } = require("fs")
 const { join } = require("path")
 
-const { argv } = require("yargs").boolean("fix").default("fix", true)
+// const { argv } = require("yargs").boolean("fix").default("fix", false)
 
 let packagePaths
 
@@ -21,8 +21,8 @@ async function dieGracefully() {
   await restoreOriginalPackageJson(packagePaths)
   process.exit(1)
 }
-process.on("SIGINT", async () => dieGracefully())
-process.on("SIGTERM", async () => dieGracefully())
+process.on("SIGINT", async () => await dieGracefully())
+process.on("SIGTERM", async () => await dieGracefully())
 
 function getLernaPackages() {
   const result = spawnSync("npx", ["lerna", "ls", "--all", "--json", "--loglevel=silent"], {
@@ -96,19 +96,25 @@ async function lernaAudit() {
       await writeJson(packagePaths.originalPath, newPackageJson, jsonOpts)
 
       console.log(`Run audit in ${lernaPackage.location}`)
-      const auditResult = spawnSync("npm", ["audit"], {
+
+      const betterNpmAuditArgs = process.argv.slice(2)
+      //const auditResult =
+      spawnSync("npx", ["better-npm-audit", "audit"].concat(betterNpmAuditArgs), {
         cwd: lernaPackage.location,
         stdio: "inherit",
         shell: true,
       })
-      if (auditResult.status !== 0 && argv.fix) {
-        console.log("We will fix this for you")
-        spawnSync("npm", ["audit", "fix"], {
-          cwd: lernaPackage.location,
-          stdio: "inherit",
-          shell: true,
-        })
-      }
+
+      // fixup disabled
+      // if (auditResult.status !== 0 && argv.fix) {
+      //   console.log("We will fix this for you")
+      //   spawnSync("npm", ["audit", "fix"], {
+      //     cwd: lernaPackage.location,
+      //     stdio: "inherit",
+      //     shell: true,
+      //   })
+      // }
+
       const restoredPackageJson = restorePackageJson(packagePaths, internalLernaDependencies)
 
       await writeJson(packagePaths.originalPath, restoredPackageJson, jsonOpts)
